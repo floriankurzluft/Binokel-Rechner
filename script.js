@@ -82,5 +82,27 @@ berechnenBtn.addEventListener("click", () => {
             document.getElementById("resetBtn").style.display = "block";
         }
     }
+    const resetBtn = document.getElementById("resetBtn");
+
+    resetBtn.addEventListener("click", () => {
+        // Gesamtpunkte zurücksetzen
+        gesamt = [0, 0, 0];
+
+        document.querySelector(".gesamt1").innerText = 0;
+        document.querySelector(".gesamt2").innerText = 0;
+        document.querySelector(".gesamt3").innerText = 0;
+
+        // Rundenhistorie leeren
+        document.getElementById("history").innerHTML = "";
+
+        // Eingabefelder zurücksetzen
+        document.querySelectorAll(".meldung").forEach(i => i.value = 0);
+        document.querySelectorAll(".gestochen").forEach(i => i.value = 0);
+        document.getElementById("reizwert").value = 0;
+
+        // Button wieder ausblenden
+        resetBtn.style.display = "none";
+    })
 });
+
 
