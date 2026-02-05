@@ -3,66 +3,84 @@ const reizwertInput = document.getElementById("reizwert");
 const spielerIndexSelect = document.getElementById("spielerIndex");
 
 let gesamt = [0,0,0];
-
 berechnenBtn.addEventListener("click", () => {
+
     const reizwert = parseInt(reizwertInput.value) || 0;
     const spielerIndex = parseInt(spielerIndexSelect.value);
 
     const meldungInputs = document.querySelectorAll(".meldung");
     const gestochenInputs = document.querySelectorAll(".gestochen");
 
-    let meldungen = [];
-    let gestochen = [];
-    for(let i=0;i<3;i++){
-        meldungen.push(parseInt(meldungInputs[i].value)||0);
-        gestochen.push(parseInt(gestochenInputs[i].value)||0);
+    let meld = [];
+    let stich = [];
+
+    for (let i = 0; i < 3; i++) {
+        meld.push(parseInt(meldungInputs[i].value) || 0);
+        stich.push(parseInt(gestochenInputs[i].value) || 0);
     }
 
-    let rundenpunkte = [0,0,0];
+    const table = document.getElementById("history");
 
-    // Spieler der das Spiel macht
-    let sMeld = meldungen[spielerIndex];
-    let sStich = gestochen[spielerIndex];
-    let sSum = sMeld + sStich;
+    // Gemeldet-Zeile
+    const rowMeld = document.createElement("tr");
+    rowMeld.innerHTML = `
+        <td class="label">Gemeldet</td>
+        <td>${meld[0]}</td>
+        <td>${meld[1]}</td>
+        <td>${meld[2]}</td>
+        <td>${reizwert}</td>
+    `;
 
-    if(sMeld === -reizwert){
-        // Spiel abgelassen
+    // Gestochen-Zeile
+    const rowStich = document.createElement("tr");
+    rowStich.innerHTML = `
+        <td class="label">Gestochen</td>
+        <td>${stich[0]}</td>
+        <td>${stich[1]}</td>
+        <td>${stich[2]}</td>
+        <td></td>
+    `;
+
+    table.appendChild(rowMeld);
+    table.appendChild(rowStich);
+
+    // Punkteberechnung
+    let rundenpunkte = [0, 0, 0];
+    let sSum = meld[spielerIndex] + stich[spielerIndex];
+
+    if (meld[spielerIndex] === -reizwert) {
         rundenpunkte[spielerIndex] = -reizwert;
-        for(let i=0;i<3;i++){
-            if(i!==spielerIndex){
-                rundenpunkte[i] = meldungen[i] + Math.floor(reizwert/2);
+        for (let i = 0; i < 3; i++) {
+            if (i !== spielerIndex) {
+                rundenpunkte[i] = meld[i] + Math.floor(reizwert / 2);
             }
         }
-    } else if(sSum >= reizwert){
+    } else if (sSum >= reizwert) {
         rundenpunkte[spielerIndex] = sSum;
-        for(let i=0;i<3;i++){
-            if(i!==spielerIndex){
-                rundenpunkte[i] = gestochen[i] === 0 ? 0 : meldungen[i] + gestochen[i];
+        for (let i = 0; i < 3; i++) {
+            if (i !== spielerIndex) {
+                rundenpunkte[i] = stich[i] === 0 ? 0 : meld[i] + stich[i];
             }
         }
     } else {
-        rundenpunkte[spielerIndex] = -reizwert*2;
-        for(let i=0;i<3;i++){
-            if(i!==spielerIndex){
-                rundenpunkte[i] = gestochen[i] === 0 ? 0 : meldungen[i] + gestochen[i];
+        rundenpunkte[spielerIndex] = -reizwert * 2;
+        for (let i = 0; i < 3; i++) {
+            if (i !== spielerIndex) {
+                rundenpunkte[i] = stich[i] === 0 ? 0 : meld[i] + stich[i];
             }
         }
     }
 
-    // Gesamtpunkte aktualisieren
-    for(let i=0;i<3;i++){
+    for (let i = 0; i < 3; i++) {
         gesamt[i] += rundenpunkte[i];
-        document.querySelector(`.runde${i+1}`).innerText = rundenpunkte[i];
-        document.querySelector(`.gesamt${i+1}`).innerText = gesamt[i];
+        document.querySelector(`.gesamt${i + 1}`).innerText = gesamt[i];
     }
 
     // Gewinner prüfen
-    let winnerText = "";
-    for(let i=0;i<3;i++){
-        if(gesamt[i]>=1000 && i===spielerIndex && rundenpunkte[i]>0){
-            winnerText = `🎉 Spieler ${i+1} hat gewonnen! 🎉`;
-            break;
+    for (let i = 0; i < 3; i++) {
+        if (gesamt[i] >= 1000 && i === spielerIndex && rundenpunkte[i] > 0) {
+            document.getElementById("resetBtn").style.display = "block";
         }
     }
-    document.getElementById("winner").innerText = winnerText;
 });
+
