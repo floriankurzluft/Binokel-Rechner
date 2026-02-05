@@ -79,3 +79,8 @@ button:hover {
     text-align: center;
     color: green;
 }
+.label {
+    font-weight: bold;
+    background-color: #f0f0f0;
+}
+
