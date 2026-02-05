@@ -1,6 +1,7 @@
 const berechnenBtn = document.getElementById("berechnenBtn");
 const reizwertInput = document.getElementById("reizwert");
 const spielerIndexSelect = document.getElementById("spielerIndex");
+const resetBtn = document.getElementById("resetBtn");
 
 let gesamt = [0,0,0];
 let runde = 1;
@@ -80,20 +81,18 @@ berechnenBtn.addEventListener("click", () => {
     }
 
     // Gewinner prüfen
-    for (let i = 0; i < 3; i++) {
-        if (gesamt[i] >= 1000 && i === spielerIndex && rundenpunkte[i] > 0) {
-            document.getElementById("resetBtn").style.display = "block";
+  
+    if (gesamt[i] >= 1000 && i === spielerIndex && rundenpunkte[i] > 0) {
+        document.getElementById("resetBtn").style.display = "block";
 
-            document
-                .querySelectorAll(".history-table tr")
-                .forEach(row => row.classList.remove("winner-row"));
+        document
+            .querySelectorAll(".history-table tr")
+            .forEach(row => row.classList.remove("winner-row"));
 
-            rowMeld.classList.add("winner-row");
-            rowStich.classList.add("winner-row");
-        }
+        rowMeld.classList.add("winner-row");
+        rowStich.classList.add("winner-row");
     }
 
-    const resetBtn = document.getElementById("resetBtn");
 
     resetBtn.addEventListener("click", () => {
         // Gesamtpunkte zurücksetzen
@@ -113,8 +112,8 @@ berechnenBtn.addEventListener("click", () => {
         document.getElementById("reizwert").value = 0;
 
         // Button wieder ausblenden
-        resetBtn.style.display = "none";
-        runde ++; 
+        resetBtn.style.display = "none";  
     })
-    
+    runde ++; 
+
 });
