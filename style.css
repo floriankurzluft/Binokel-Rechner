@@ -128,3 +128,22 @@ button:hover {
     font-weight: bold;
 }
 
+.spielername {
+    width: 100%;
+    text-align: center;
+    border: none;
+    background: transparent;
+    font-weight: bold;
+
+    font-size: clamp(0.7rem, 3vw, 1rem);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.spielername:focus {
+    outline: none;
+    background: #eef4ff;
+    border-radius: 6px;
+}
+
