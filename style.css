@@ -101,22 +101,14 @@ button:hover {
 /* Tabellen-Optik */
 .history-table {
     width: 100%;
-    border-collapse: collapse;
-    font-size: 0.95rem;
+    table-layout: fixed;
+    font-size: 0.8rem;
 }
 
 .history-table th {
-    position: sticky;
-    top: 0;
-    background: #2c3e50;
-    color: white;
-    padding: 10px;
-}
-
 .history-table td {
-    padding: 8px;
-    text-align: center;
-    border-bottom: 1px solid #ddd;
+    padding: 6px 4px;
+    word-wrap: break-word;
 }
 
 /* Runde */
@@ -135,3 +127,4 @@ button:hover {
     background-color: #d4edda !important;
     font-weight: bold;
 }
+
