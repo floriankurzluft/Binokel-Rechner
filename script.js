@@ -13,7 +13,17 @@ berechnenBtn.addEventListener("click", () => {
 
     const meldungInputs = document.querySelectorAll(".meldung");
     const gestochenInputs = document.querySelectorAll(".gestochen");
+    const namenInputs = document.querySelectorAll(".spielername");
+    const namen = [
+        namenInputs[0].value || "Spieler 1",
+        namenInputs[1].value || "Spieler 2",
+        namenInputs[2].value || "Spieler 3"
+    ];
 
+    document.getElementById("name1").innerText = namen[0];
+    document.getElementById("name2").innerText = namen[1];
+    document.getElementById("name3").innerText = namen[2];
+    
     let meld = [];
     let stich = [];
 
@@ -116,4 +126,5 @@ berechnenBtn.addEventListener("click", () => {
         resetBtn.style.display = "none"; 
 
 });
+
 
