@@ -133,9 +133,9 @@ button:hover {
     text-align: center;
     border: none;
     background: transparent;
-    font-weight: bold;
+    font-weight: 600;
 
-    font-size: clamp(0.7rem, 3vw, 1rem);
+    font-size: clamp(12px, 3vw, 16px);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -146,4 +146,5 @@ button:hover {
     background: #eef4ff;
     border-radius: 6px;
 }
+
 
