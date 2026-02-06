@@ -82,9 +82,8 @@ berechnenBtn.addEventListener("click", () => {
 
     // Gewinner prüfen
   
-    if (gesamt[i] >= 1000 && i === spielerIndex && rundenpunkte[i] > 0) {
-        document.getElementById("resetBtn").style.display = "block";
-
+    if (gesamt[spielerIndex] >= 1000 && rundenpunkte[spielerIndex] > 0) {
+        resetBtn.style.display = "block";
         document
             .querySelectorAll(".history-table tr")
             .forEach(row => row.classList.remove("winner-row"));
@@ -93,7 +92,9 @@ berechnenBtn.addEventListener("click", () => {
         rowStich.classList.add("winner-row");
     }
 
-
+        runde ++;
+    
+    })
     resetBtn.addEventListener("click", () => {
         // Gesamtpunkte zurücksetzen
         gesamt = [0, 0, 0];
@@ -112,8 +113,7 @@ berechnenBtn.addEventListener("click", () => {
         document.getElementById("reizwert").value = 0;
 
         // Button wieder ausblenden
-        resetBtn.style.display = "none";  
-    })
-    runde ++; 
+        resetBtn.style.display = "none"; 
 
 });
+
