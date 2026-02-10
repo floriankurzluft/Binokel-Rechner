@@ -10,6 +10,7 @@ berechnenBtn.addEventListener("click", () => {
 
     const reizwert = parseInt(reizwertInput.value) || 0;
     const spielerIndex = parseInt(spielerIndexSelect.value);
+    const vorher = [...gesamt];
 
     const meldungInputs = document.querySelectorAll(".meldung");
     const gestochenInputs = document.querySelectorAll(".gestochen");
@@ -92,12 +93,13 @@ berechnenBtn.addEventListener("click", () => {
 
     // Gewinner prüfen
   
-    if (gesamt[spielerIndex] >= 1000 && rundenpunkte[spielerIndex] > 0) {
+    if (vorher[spielerIndex] < 1000 &&
+        gesamt[spielerIndex] >= 1000 &&
+        rundenpunkte[spielerIndex] > 0
+    ) {
         resetBtn.style.display = "block";
-        document
-            .querySelectorAll(".history-table tr")
-            .forEach(row => row.classList.remove("winner-row"));
-
+        berechnenBtn.disabled = true;
+        
         rowMeld.classList.add("winner-row");
         rowStich.classList.add("winner-row");
     }
@@ -126,5 +128,6 @@ berechnenBtn.addEventListener("click", () => {
         resetBtn.style.display = "none"; 
 
 });
+
 
 
