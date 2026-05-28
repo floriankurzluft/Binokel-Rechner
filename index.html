@@ -1,94 +1,108 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Binokel Rechen-App</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Binokel Rechen-App</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div class="container">
-        <h1>Binokel Rechen-App</h1>
+  <div class="app-shell">
+    <section id="startScreen" class="screen start-screen active">
+      <div class="brand-pill">Binokel Rechen-App</div>
+      <h1>Spielmodus wählen</h1>
+      <p class="subtitle">Wähle zuerst, ob ihr mit 3 Spielern oder mit 4 Spielern in 2 Teams spielt.</p>
 
-        <div class="input-section">
-            <label>Reizwert: <input type="number" id="reizwert" value="0"></label>
-            <label>Spieler macht das Spiel:
-                <select id="spielerIndex">
-                    <option value="0">Spieler 1</option>
-                    <option value="1">Spieler 2</option>
-                    <option value="2">Spieler 3</option>
-                </select>
-            </label>
+      <div class="mode-grid">
+        <button class="mode-card" data-mode="3">
+          <span class="mode-icon">👤👤👤</span>
+          <span class="mode-title">3 Spieler</span>
+          <span class="mode-text">Einzelwertung für Spieler 1–3</span>
+        </button>
+
+        <button class="mode-card" data-mode="4">
+          <span class="mode-icon">👥 vs 👥</span>
+          <span class="mode-title">4 Spieler / 2 Teams</span>
+          <span class="mode-text">Teamwertung für Team 1 und Team 2</span>
+        </button>
+      </div>
+    </section>
+
+    <section id="gameScreen" class="screen game-screen">
+      <div class="topbar">
+        <div>
+          <div class="brand-pill small">Binokel</div>
+          <h2 id="gameTitle">Wertung</h2>
+          <p id="gameSubtitle" class="subtitle small"></p>
         </div>
+        <button id="backBtn" class="secondary-btn">← Modus wechseln</button>
+      </div>
 
-        <div class="table-section">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Spieler</th>
-                        <th>gemeldet <i class="fas fa-star"></i></th>
-                        <th>gestochen <i class="fas fa-heart"></i></th>
-                        <th>Gesamtpunkte</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <input type="text" class="spielername" value="Spieler 1">
-                        </td>
-                        <td><input type="number" class="meldung" value="0"></td>
-                        <td><input type="number" class="gestochen" value="0"></td>
-                        <td class="gesamt1">0</td>
-                    </tr>
+      <div class="panel input-panel">
+        <div class="field-grid">
+          <label>
+            Reizwert
+            <input type="number" id="reizwert" min="0" value="0" />
+          </label>
 
-                    <tr>
-                        <td>
-                            <input type="text" class="spielername" value="Spieler 2">
-                        </td>
-                        <td><input type="number" class="meldung" value="0"></td>
-                        <td><input type="number" class="gestochen" value="0"></td>
-                        <td class="gesamt2">0</td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <input type="text" class="spielername" value="Spieler 3">
-                        </td>
-                        <td><input type="number" class="meldung" value="0"></td>
-                        <td><input type="number" class="gestochen" value="0"></td>
-                        <td class="gesamt3">0</td>
-                    </tr>
-                </tbody>
-
-            </table>
+          <label>
+            <span id="macherLabel">Spieler macht das Spiel</span>
+            <select id="spielerIndex"></select>
+          </label>
         </div>
-        <h2>Rundenübersicht</h2>
+      </div>
+
+      <div class="panel table-panel">
+        <div class="table-scroll">
+          <table id="scoreTable">
+            <thead>
+              <tr>
+                <th id="entityHeader">Spieler</th>
+                <th>Meldung</th>
+                <th>Gestochene</th>
+                <th>Gesamtpunkte</th>
+              </tr>
+            </thead>
+            <tbody id="scoreTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="berechnenBtn" class="primary-btn">Runde berechnen</button>
+        <button id="resetBtn" class="secondary-btn danger">Spiel zurücksetzen</button>
+      </div>
+
+      <div class="panel history-panel">
+        <div class="history-header">
+          <h3>Rundenübersicht</h3>
+          <span id="roundBadge" class="round-badge">Runde 1</span>
+        </div>
         <div class="history-wrapper">
-            <table class="history-table">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th id="name1">Spieler 1</th>
-                        <th id="name2">Spieler 2</th>
-                        <th id="name3">Spieler 3</th>
-                        <th>Reizwert</th>
-                    </tr>
-                </thead>
-                <tbody id="history"></tbody>
-            </table>
-        </div> 
-        
-        <button id="berechnenBtn"><i class="fas fa-calculator"></i> Runde Berechnen</button>
-        <div id="winner" class="winner"></div>
-    </div>
+          <table class="history-table">
+            <thead>
+              <tr id="historyHeaderRow"></tr>
+            </thead>
+            <tbody id="history"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
 
-    <script src="script.js"></script>
+  <div id="winnerModal" class="modal hidden" aria-hidden="true">
+    <div class="modal-backdrop"></div>
+    <div class="modal-card">
+      <div class="trophy">🏆</div>
+      <h2 id="winnerTitle">Gewonnen!</h2>
+      <p id="winnerText"></p>
+      <div class="modal-actions">
+        <button id="winnerCloseBtn" class="primary-btn">Weiter</button>
+      </div>
+      <div class="confetti-layer" id="confettiLayer"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
-
-
-
-
-
-
