@@ -171,6 +171,10 @@ select {
   color: var(--text);
 }
 
+.name-label {
+  color: var(--primary-dark);
+}
+
 .table-scroll,
 .history-wrapper {
   overflow-x: auto;
@@ -223,7 +227,7 @@ tbody tr:last-child td {
 }
 
 .primary-btn {
-  flex: 1 1 280px;
+  flex: 1 1 260px;
   background: linear-gradient(135deg, var(--primary), #3576bf);
   color: white;
   font-weight: 700;
@@ -262,6 +266,11 @@ tbody tr:last-child td {
   font-weight: 700;
 }
 
+.round-badge.soft {
+  background: rgba(32, 48, 71, 0.08);
+  color: var(--muted);
+}
+
 .runde-row-label {
   text-align: left;
   font-weight: 700;
@@ -282,6 +291,11 @@ tbody tr:last-child td {
 
 .winner-highlight {
   animation: winnerPulse 1.2s ease 0s 4;
+}
+
+.undo-disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 @keyframes winnerPulse {
