@@ -29,7 +29,7 @@ const CONFIG = {
   },
   4: {
     title: "4 Spieler / 2 Teams",
-    subtitle: "Teamwertung für Team 1 und Team 2 (2 gegen 2)",
+    subtitle: "Teamwertung für Team 1 und Team 2",
     entityLabel: "Team",
     actorLabel: "Team macht das Spiel",
     names: ["Team 1", "Team 2"],
@@ -194,7 +194,7 @@ function appendHistoryRows({ meld, stich, reizwert, actorIndex, rundenpunkte, wi
 
 function showWinnerModal(name, punkte) {
   winnerTitle.textContent = `${name} hat gewonnen!`;
-  winnerText.textContent = `${name} hat mindestens 1000 Punkte erreicht und das Spiel erfolgreich gemacht. Aktueller Stand: ${punkte} Punkte.`;
+  winnerText.textContent = `${name} hat 1000 Punkte erreicht und das Spiel gewonnen.`;
   winnerModal.classList.remove("hidden");
   winnerModal.setAttribute("aria-hidden", "false");
   launchConfetti();
