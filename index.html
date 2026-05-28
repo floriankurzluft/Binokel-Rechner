@@ -9,91 +9,102 @@
 <body>
   <div class="app-shell">
     <section id="startScreen" class="screen start-screen active">
-      <div class="brand-pill">Binokel Rechen-App</div>
-      <h1>Spielmodus wählen</h1>
-      <p class="subtitle">Wähle zuerst, ob ihr mit 3 Spielern oder mit 4 Spielern in 2 Teams spielt.</p>
+      <div class="hero-card fade-up">
+        <div class="brand-pill">Binokel Rechen-App</div>
+        <h1>Spielmodus wählen</h1>
+        <p class="subtitle">Wähle zuerst, ob ihr mit 3 Spielern oder mit 4 Spielern in 2 Teams spielt.</p>
 
-      <div class="mode-grid">
-        <button class="mode-card" data-mode="3">
-          <span class="mode-icon">👤👤👤</span>
-          <span class="mode-title">3 Spieler</span>
-          <span class="mode-text">Einzelwertung für 3 Spieler</span>
-        </button>
+        <div class="mode-grid">
+          <button class="mode-card" data-mode="3">
+            <span class="mode-icon">👤👤👤</span>
+            <span class="mode-title">3 Spieler</span>
+            <span class="mode-text">Einzelwertung für Spieler 1–3</span>
+          </button>
 
-        <button class="mode-card" data-mode="4">
-          <span class="mode-icon">👥 vs 👥</span>
-          <span class="mode-title">4 Spieler / 2 Teams</span>
-          <span class="mode-text">Teamwertung für Team 1 und Team 2</span>
-        </button>
+          <button class="mode-card" data-mode="4">
+            <span class="mode-icon">👥 vs 👥</span>
+            <span class="mode-title">4 Spieler / 2 Teams</span>
+            <span class="mode-text">Teamwertung für Team 1 und Team 2</span>
+          </button>
+        </div>
       </div>
     </section>
 
     <section id="gameScreen" class="screen game-screen">
-      <div class="topbar">
+      <div class="topbar fade-up">
         <div>
           <div class="brand-pill small">Binokel</div>
           <h2 id="gameTitle">Wertung</h2>
-          <p id="gameSubtitle" class="subtitle small"></p>
+          <p id="gameSubtitle" class="subtitle compact"></p>
         </div>
         <button id="backBtn" class="secondary-btn">← Modus wechseln</button>
       </div>
 
-      <div class="panel input-panel">
-        <div class="field-grid">
-          <label>
-            Reizwert
-            <input type="number" id="reizwert" min="0" value="0" />
-          </label>
+      <div class="layout-grid">
+        <div class="main-column">
+          <div class="panel input-panel fade-up">
+            <div class="panel-header">
+              <h3>Rundenwerte</h3>
+              <span class="panel-badge">Eingabe</span>
+            </div>
 
-          <label>
-            <span id="macherLabel">Spieler macht das Spiel</span>
-            <select id="spielerIndex"></select>
-          </label>
+            <div class="field-grid">
+              <label>
+                Reizwert
+                <input type="number" id="reizwert" min="0" value="0" />
+              </label>
+
+              <label>
+                <span id="macherLabel">Spieler macht das Spiel</span>
+                <select id="spielerIndex"></select>
+              </label>
+            </div>
+          </div>
+
+          <div class="panel table-panel fade-up delay-1">
+            <div class="panel-header">
+              <h3>Zwischenstand</h3>
+              <span id="roundBadge" class="round-badge">Runde 1</span>
+            </div>
+
+            <div class="table-scroll">
+              <table id="scoreTable">
+                <thead>
+                  <tr>
+                    <th id="entityHeader">Spieler</th>
+                    <th>Meldung</th>
+                    <th>Gestochene</th>
+                    <th>Gesamtpunkte</th>
+                  </tr>
+                </thead>
+                <tbody id="scoreTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="actions fade-up delay-2">
+            <button id="berechnenBtn" class="primary-btn">Runde berechnen</button>
+            <button id="undoBtn" class="secondary-btn">↶ Letzte Runde rückgängig</button>
+            <button id="resetBtn" class="secondary-btn danger">Spiel zurücksetzen</button>
+          </div>
         </div>
-      </div>
 
-      <div class="panel names-panel">
-        <div class="history-header">
-          <h3 id="namesPanelTitle">Namen</h3>
-          <span class="round-badge soft">Individuell anpassbar</span>
-        </div>
-        <div id="nameInputs" class="field-grid"></div>
-      </div>
+        <div class="side-column fade-up delay-1">
+          <div class="panel history-panel">
+            <div class="panel-header">
+              <h3>Rundenübersicht</h3>
+              <span class="panel-badge neutral">Verlauf</span>
+            </div>
 
-      <div class="panel table-panel">
-        <div class="table-scroll">
-          <table id="scoreTable">
-            <thead>
-              <tr>
-                <th id="entityHeader">Spieler</th>
-                <th>Meldung</th>
-                <th>Gestochene</th>
-                <th>Gesamtpunkte</th>
-              </tr>
-            </thead>
-            <tbody id="scoreTableBody"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="actions">
-        <button id="berechnenBtn" class="primary-btn">Runde berechnen</button>
-        <button id="undoBtn" class="secondary-btn">↶ Letzte Runde rückgängig</button>
-        <button id="resetBtn" class="secondary-btn danger">Spiel zurücksetzen</button>
-      </div>
-
-      <div class="panel history-panel">
-        <div class="history-header">
-          <h3>Rundenübersicht</h3>
-          <span id="roundBadge" class="round-badge">Runde 1</span>
-        </div>
-        <div class="history-wrapper">
-          <table class="history-table">
-            <thead>
-              <tr id="historyHeaderRow"></tr>
-            </thead>
-            <tbody id="history"></tbody>
-          </table>
+            <div class="history-wrapper">
+              <table class="history-table">
+                <thead>
+                  <tr id="historyHeaderRow"></tr>
+                </thead>
+                <tbody id="history"></tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </section>
