@@ -19,8 +19,6 @@ const winnerTitle = document.getElementById("winnerTitle");
 const winnerText = document.getElementById("winnerText");
 const winnerCloseBtn = document.getElementById("winnerCloseBtn");
 const confettiLayer = document.getElementById("confettiLayer");
-const nameInputs = document.getElementById("nameInputs");
-const namesPanelTitle = document.getElementById("namesPanelTitle");
 
 const CONFIG = {
   3: {
@@ -29,15 +27,13 @@ const CONFIG = {
     entityLabel: "Spieler",
     actorLabel: "Spieler macht das Spiel",
     names: ["Spieler 1", "Spieler 2", "Spieler 3"],
-    namesPanelTitle: "Spielernamen"
   },
   4: {
     title: "4 Spieler / 2 Teams",
-    subtitle: "Teamwertung für Team 1 und Team 2",
+    subtitle: "Teamwertung für Team 1 und Team 2 (2 gegen 2)",
     entityLabel: "Team",
     actorLabel: "Team macht das Spiel",
     names: ["Team 1", "Team 2"],
-    namesPanelTitle: "Teamnamen"
   }
 };
 
@@ -62,7 +58,7 @@ function escapeHtml(value) {
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/\"/g, "&quot;")
+    .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
 }
 
@@ -73,7 +69,6 @@ function startGame(mode) {
   runde = 1;
   roundHistory = [];
 
-  buildNameInputs();
   buildScoreTable();
   buildActorSelect();
   buildHistoryHeader();
@@ -85,43 +80,10 @@ function startGame(mode) {
   gameSubtitle.textContent = CONFIG[currentMode].subtitle;
   macherLabel.textContent = CONFIG[currentMode].actorLabel;
   document.getElementById("entityHeader").textContent = CONFIG[currentMode].entityLabel;
-  namesPanelTitle.textContent = CONFIG[currentMode].namesPanelTitle;
 
   historyBody.innerHTML = "";
   hideWinnerModal();
   showScreen("game");
-}
-
-function buildNameInputs() {
-  nameInputs.innerHTML = activeNames.map((name, index) => `
-    <label>
-      <span class="name-label">${CONFIG[currentMode].entityLabel} ${index + 1}</span>
-      <input type="text" class="name-input" data-index="${index}" value="${escapeHtml(name)}" maxlength="30" />
-    </label>
-  `).join("");
-
-  document.querySelectorAll('.name-input').forEach((input) => {
-    input.addEventListener('input', handleNameChange);
-  });
-}
-
-function handleNameChange(event) {
-  const index = sanitizeNumber(event.target.dataset.index);
-  const fallback = CONFIG[currentMode].names[index];
-  const value = event.target.value.trim();
-  activeNames[index] = value || fallback;
-  syncNamesAcrossUi();
-}
-
-function syncNamesAcrossUi() {
-  buildActorSelect();
-  buildHistoryHeader();
-
-  document.querySelectorAll('#scoreTableBody .entity-name').forEach((cell, index) => {
-    if (activeNames[index]) {
-      cell.textContent = activeNames[index];
-    }
-  });
 }
 
 function buildScoreTable() {
@@ -166,9 +128,7 @@ function updateRoundBadge() {
 }
 
 function updateUndoState() {
-  const disabled = roundHistory.length === 0;
-  undoBtn.disabled = disabled;
-  undoBtn.classList.toggle('undo-disabled', disabled);
+  undoBtn.disabled = roundHistory.length === 0;
 }
 
 function getRoundValues() {
@@ -251,7 +211,7 @@ function appendHistoryRows({ meld, stich, reizwert, actorIndex, rundenpunkte, wi
 
 function showWinnerModal(name, punkte) {
   winnerTitle.textContent = `${name} hat gewonnen!`;
-  winnerText.textContent = `${name} hat 1000 Punkte erreicht und das Spiel gewonnen. Aktueller Stand: ${punkte} Punkte.`;
+  winnerText.textContent = `${name} hat mindestens 1000 Punkte erreicht und das Spiel erfolgreich gemacht. Aktueller Stand: ${punkte} Punkte.`;
   winnerModal.classList.remove("hidden");
   winnerModal.setAttribute("aria-hidden", "false");
   launchConfetti();
@@ -286,7 +246,6 @@ function resetGame() {
   runde = 1;
   roundHistory = [];
   historyBody.innerHTML = "";
-  buildNameInputs();
   buildScoreTable();
   buildActorSelect();
   buildHistoryHeader();
@@ -354,14 +313,13 @@ berechnenBtn.addEventListener("click", () => {
     rundenpunkte: [...rundenpunkte],
     rowMeld: rows.rowMeld,
     rowStich: rows.rowStich,
-    namesSnapshot: [...activeNames]
   });
   updateUndoState();
 
   if (winner) {
     const winnerCell = document.querySelector(`.gesamt${actorIndex}`);
     winnerCell?.classList.add("winner-highlight");
-    setTimeout(() => winnerCell?.classList.remove("winner-highlight"), 4800);
+    setTimeout(() => winnerCell?.classList.remove("winner-highlight"), 3800);
     showWinnerModal(activeNames[actorIndex], gesamt[actorIndex]);
   }
 
