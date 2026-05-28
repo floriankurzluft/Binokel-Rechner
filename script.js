@@ -3,6 +3,7 @@ const gameScreen = document.getElementById("gameScreen");
 const modeButtons = document.querySelectorAll(".mode-card");
 const backBtn = document.getElementById("backBtn");
 const berechnenBtn = document.getElementById("berechnenBtn");
+const undoBtn = document.getElementById("undoBtn");
 const resetBtn = document.getElementById("resetBtn");
 const reizwertInput = document.getElementById("reizwert");
 const spielerIndexSelect = document.getElementById("spielerIndex");
@@ -18,6 +19,8 @@ const winnerTitle = document.getElementById("winnerTitle");
 const winnerText = document.getElementById("winnerText");
 const winnerCloseBtn = document.getElementById("winnerCloseBtn");
 const confettiLayer = document.getElementById("confettiLayer");
+const nameInputs = document.getElementById("nameInputs");
+const namesPanelTitle = document.getElementById("namesPanelTitle");
 
 const CONFIG = {
   3: {
@@ -26,6 +29,7 @@ const CONFIG = {
     entityLabel: "Spieler",
     actorLabel: "Spieler macht das Spiel",
     names: ["Spieler 1", "Spieler 2", "Spieler 3"],
+    namesPanelTitle: "Spielernamen"
   },
   4: {
     title: "4 Spieler / 2 Teams",
@@ -33,12 +37,15 @@ const CONFIG = {
     entityLabel: "Team",
     actorLabel: "Team macht das Spiel",
     names: ["Team 1", "Team 2"],
+    namesPanelTitle: "Teamnamen"
   }
 };
 
 let currentMode = null;
 let gesamt = [];
 let runde = 1;
+let activeNames = [];
+let roundHistory = [];
 
 function showScreen(screen) {
   startScreen.classList.toggle("active", screen === "start");
@@ -50,32 +57,77 @@ function sanitizeNumber(value) {
   return Number.isNaN(parsed) ? 0 : parsed;
 }
 
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 function startGame(mode) {
   currentMode = String(mode);
-  gesamt = Array(CONFIG[currentMode].names.length).fill(0);
+  activeNames = [...CONFIG[currentMode].names];
+  gesamt = Array(activeNames.length).fill(0);
   runde = 1;
+  roundHistory = [];
 
+  buildNameInputs();
   buildScoreTable();
   buildActorSelect();
   buildHistoryHeader();
   resetInputs();
   updateRoundBadge();
+  updateUndoState();
 
   gameTitle.textContent = `Wertung – ${CONFIG[currentMode].title}`;
   gameSubtitle.textContent = CONFIG[currentMode].subtitle;
   macherLabel.textContent = CONFIG[currentMode].actorLabel;
   document.getElementById("entityHeader").textContent = CONFIG[currentMode].entityLabel;
+  namesPanelTitle.textContent = CONFIG[currentMode].namesPanelTitle;
 
   historyBody.innerHTML = "";
   hideWinnerModal();
   showScreen("game");
 }
 
+function buildNameInputs() {
+  nameInputs.innerHTML = activeNames.map((name, index) => `
+    <label>
+      <span class="name-label">${CONFIG[currentMode].entityLabel} ${index + 1}</span>
+      <input type="text" class="name-input" data-index="${index}" value="${escapeHtml(name)}" maxlength="30" />
+    </label>
+  `).join("");
+
+  document.querySelectorAll('.name-input').forEach((input) => {
+    input.addEventListener('input', handleNameChange);
+  });
+}
+
+function handleNameChange(event) {
+  const index = sanitizeNumber(event.target.dataset.index);
+  const fallback = CONFIG[currentMode].names[index];
+  const value = event.target.value.trim();
+  activeNames[index] = value || fallback;
+  syncNamesAcrossUi();
+}
+
+function syncNamesAcrossUi() {
+  buildActorSelect();
+  buildHistoryHeader();
+
+  document.querySelectorAll('#scoreTableBody .entity-name').forEach((cell, index) => {
+    if (activeNames[index]) {
+      cell.textContent = activeNames[index];
+    }
+  });
+}
+
 function buildScoreTable() {
-  const names = CONFIG[currentMode].names;
-  scoreTableBody.innerHTML = names.map((name, index) => `
+  scoreTableBody.innerHTML = activeNames.map((name, index) => `
     <tr>
-      <td class="entity-name">${name}</td>
+      <td class="entity-name">${escapeHtml(name)}</td>
       <td><input type="number" class="meldung" data-index="${index}" value="0" /></td>
       <td><input type="number" class="gestochen" data-index="${index}" value="0" /></td>
       <td class="total-cell gesamt${index}">0</td>
@@ -84,15 +136,13 @@ function buildScoreTable() {
 }
 
 function buildActorSelect() {
-  const names = CONFIG[currentMode].names;
-  spielerIndexSelect.innerHTML = names
-    .map((name, index) => `<option value="${index}">${name}</option>`)
+  spielerIndexSelect.innerHTML = activeNames
+    .map((name, index) => `<option value="${index}">${escapeHtml(name)}</option>`)
     .join("");
 }
 
 function buildHistoryHeader() {
-  const names = CONFIG[currentMode].names;
-  historyHeaderRow.innerHTML = ["<th></th>", ...names.map(name => `<th>${name}</th>`), "<th>Reizwert</th>"].join("");
+  historyHeaderRow.innerHTML = ["<th></th>", ...activeNames.map(name => `<th>${escapeHtml(name)}</th>`), "<th>Reizwert</th>"].join("");
 }
 
 function resetInputs() {
@@ -115,8 +165,14 @@ function updateRoundBadge() {
   roundBadge.textContent = `Runde ${runde}`;
 }
 
+function updateUndoState() {
+  const disabled = roundHistory.length === 0;
+  undoBtn.disabled = disabled;
+  undoBtn.classList.toggle('undo-disabled', disabled);
+}
+
 function getRoundValues() {
-  const count = CONFIG[currentMode].names.length;
+  const count = activeNames.length;
   const meldungNodes = document.querySelectorAll(".meldung");
   const gestochenNodes = document.querySelectorAll(".gestochen");
 
@@ -132,7 +188,7 @@ function getRoundValues() {
 }
 
 function calculateRound({ meld, stich, reizwert, actorIndex }) {
-  const count = CONFIG[currentMode].names.length;
+  const count = activeNames.length;
   const rundenpunkte = Array(count).fill(0);
   const spielerSumme = meld[actorIndex] + stich[actorIndex];
 
@@ -167,7 +223,7 @@ function appendHistoryRows({ meld, stich, reizwert, actorIndex, rundenpunkte, wi
   rowMeld.innerHTML = `
     <td class="runde-row-label">
       Runde ${runde}
-      <span class="runde-sub">Gemeldet · ${CONFIG[currentMode].names[actorIndex]} macht das Spiel</span>
+      <span class="runde-sub">Gemeldet · ${escapeHtml(activeNames[actorIndex])} macht das Spiel</span>
     </td>
     ${meld.map(value => `<td>${value}</td>`).join("")}
     <td>${reizwert}</td>
@@ -190,11 +246,12 @@ function appendHistoryRows({ meld, stich, reizwert, actorIndex, rundenpunkte, wi
 
   historyBody.appendChild(rowMeld);
   historyBody.appendChild(rowStich);
+  return { rowMeld, rowStich };
 }
 
 function showWinnerModal(name, punkte) {
   winnerTitle.textContent = `${name} hat gewonnen!`;
-  winnerText.textContent = `${name} hat 1000 Punkte erreicht und das Spiel gewonnen.`;
+  winnerText.textContent = `${name} hat 1000 Punkte erreicht und das Spiel gewonnen. Aktueller Stand: ${punkte} Punkte.`;
   winnerModal.classList.remove("hidden");
   winnerModal.setAttribute("aria-hidden", "false");
   launchConfetti();
@@ -224,12 +281,46 @@ function launchConfetti() {
 
 function resetGame() {
   if (!currentMode) return;
-  gesamt = Array(CONFIG[currentMode].names.length).fill(0);
+  activeNames = [...CONFIG[currentMode].names];
+  gesamt = Array(activeNames.length).fill(0);
   runde = 1;
+  roundHistory = [];
   historyBody.innerHTML = "";
+  buildNameInputs();
+  buildScoreTable();
+  buildActorSelect();
+  buildHistoryHeader();
   resetInputs();
   updateRoundBadge();
+  updateUndoState();
   hideWinnerModal();
+}
+
+function undoLastRound() {
+  if (roundHistory.length === 0) return;
+
+  hideWinnerModal();
+
+  const lastRound = roundHistory.pop();
+  gesamt = gesamt.map((wert, index) => wert - lastRound.rundenpunkte[index]);
+  updateTotals();
+
+  if (lastRound.rowMeld?.parentNode) lastRound.rowMeld.remove();
+  if (lastRound.rowStich?.parentNode) lastRound.rowStich.remove();
+
+  reizwertInput.value = lastRound.reizwert;
+  spielerIndexSelect.value = String(lastRound.actorIndex);
+
+  document.querySelectorAll('.meldung').forEach((input, index) => {
+    input.value = lastRound.meld[index] ?? 0;
+  });
+  document.querySelectorAll('.gestochen').forEach((input, index) => {
+    input.value = lastRound.stich[index] ?? 0;
+  });
+
+  runde = Math.max(1, runde - 1);
+  updateRoundBadge();
+  updateUndoState();
 }
 
 modeButtons.forEach(button => {
@@ -253,19 +344,32 @@ berechnenBtn.addEventListener("click", () => {
   updateTotals();
 
   const winner = gesamt[actorIndex] >= 1000 && rundenpunkte[actorIndex] > 0;
-  appendHistoryRows({ meld, stich, reizwert, actorIndex, rundenpunkte, winner });
+  const rows = appendHistoryRows({ meld, stich, reizwert, actorIndex, rundenpunkte, winner });
+
+  roundHistory.push({
+    reizwert,
+    actorIndex,
+    meld: [...meld],
+    stich: [...stich],
+    rundenpunkte: [...rundenpunkte],
+    rowMeld: rows.rowMeld,
+    rowStich: rows.rowStich,
+    namesSnapshot: [...activeNames]
+  });
+  updateUndoState();
 
   if (winner) {
     const winnerCell = document.querySelector(`.gesamt${actorIndex}`);
     winnerCell?.classList.add("winner-highlight");
     setTimeout(() => winnerCell?.classList.remove("winner-highlight"), 4800);
-    showWinnerModal(CONFIG[currentMode].names[actorIndex], gesamt[actorIndex]);
+    showWinnerModal(activeNames[actorIndex], gesamt[actorIndex]);
   }
 
   runde += 1;
   updateRoundBadge();
 });
 
+undoBtn.addEventListener('click', undoLastRound);
 resetBtn.addEventListener("click", resetGame);
 winnerCloseBtn.addEventListener("click", hideWinnerModal);
 
