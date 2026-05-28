@@ -11,7 +11,7 @@
     <section id="startScreen" class="screen start-screen active">
       <div class="brand-pill">Binokel Rechen-App</div>
       <h1>Spielmodus wählen</h1>
-      <p class="subtitle">Wähle zuerst, ob ihr mit 3 Spielern oder mit 4 Spielern spielt.</p>
+      <p class="subtitle">Wähle zuerst, ob ihr mit 3 Spielern oder mit 4 Spielern in 2 Teams spielt.</p>
 
       <div class="mode-grid">
         <button class="mode-card" data-mode="3">
@@ -22,7 +22,7 @@
 
         <button class="mode-card" data-mode="4">
           <span class="mode-icon">👥 vs 👥</span>
-          <span class="mode-title">4 Spieler </span>
+          <span class="mode-title">4 Spieler / 2 Teams</span>
           <span class="mode-text">Teamwertung für Team 1 und Team 2</span>
         </button>
       </div>
@@ -52,6 +52,14 @@
         </div>
       </div>
 
+      <div class="panel names-panel">
+        <div class="history-header">
+          <h3 id="namesPanelTitle">Namen</h3>
+          <span class="round-badge soft">Individuell anpassbar</span>
+        </div>
+        <div id="nameInputs" class="field-grid"></div>
+      </div>
+
       <div class="panel table-panel">
         <div class="table-scroll">
           <table id="scoreTable">
@@ -70,6 +78,7 @@
 
       <div class="actions">
         <button id="berechnenBtn" class="primary-btn">Runde berechnen</button>
+        <button id="undoBtn" class="secondary-btn">↶ Letzte Runde rückgängig</button>
         <button id="resetBtn" class="secondary-btn danger">Spiel zurücksetzen</button>
       </div>
 
