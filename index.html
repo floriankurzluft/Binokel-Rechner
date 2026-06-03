@@ -15,30 +15,30 @@
     <span>♠</span><span>♥</span><span>♦</span><span>♣</span>
   </div>
 
+  <!-- TOAST -->
+  <div id="toast" class="toast" role="status" aria-live="polite">
+    <span id="toastMsg"></span>
+  </div>
+
   <div class="app-shell">
 
-    <!-- ═══════════════════════════════════════════════
-         START SCREEN
-    ════════════════════════════════════════════════ -->
+    <!-- ═══════════════ START SCREEN ═══════════════ -->
     <section id="startScreen" class="screen active">
       <div class="start-wrap">
-
         <div class="start-topbar">
           <div class="brand">
             <span class="brand-suit">♠</span>
             <span class="brand-name">Binokel</span>
           </div>
-          <button class="theme-btn js-theme" aria-label="Dark/Light Mode umschalten">
+          <button class="theme-btn js-theme" aria-label="Dark/Light Mode">
             <span class="theme-icon"></span>
           </button>
         </div>
-
         <div class="hero">
           <div class="kicker">Kartenspiel · Schwäbisch</div>
           <h1 class="hero-title">Spielmodus<br><em>wählen</em></h1>
           <p class="hero-sub">Wählt zunächst, ob ihr mit 3 Spielern einzeln oder mit 4 Spielern in 2 Teams spielt.</p>
         </div>
-
         <div class="mode-grid">
           <button class="mode-card" data-mode="3">
             <div class="mc-corner tl">♠</div>
@@ -48,7 +48,6 @@
             <div class="mc-sub">Einzelwertung</div>
             <div class="mc-cta">Auswählen →</div>
           </button>
-
           <button class="mode-card" data-mode="4">
             <div class="mc-corner tl">♦</div>
             <div class="mc-corner br">♦</div>
@@ -58,48 +57,66 @@
             <div class="mc-cta">Auswählen →</div>
           </button>
         </div>
-
       </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════════
-         SETUP SCREEN – Namen vergeben
-    ════════════════════════════════════════════════ -->
+    <!-- ═══════════════ SETUP SCREEN ═══════════════ -->
     <section id="setupScreen" class="screen">
       <div class="setup-wrap">
-
         <div class="setup-topbar">
           <button id="setupBackBtn" class="back-link">← Zurück</button>
-          <button class="theme-btn js-theme" aria-label="Dark/Light Mode umschalten">
+          <button class="theme-btn js-theme" aria-label="Dark/Light Mode">
             <span class="theme-icon"></span>
           </button>
         </div>
-
         <div class="setup-header">
           <div class="brand small">
             <span class="brand-suit">♠</span>
             <span class="brand-name">Binokel</span>
           </div>
-          <h2 class="setup-title">Namen vergeben</h2>
-          <p id="setupSubtitle" class="setup-sub">Gib den Spielern ihre Namen.</p>
+          <h2 class="setup-title">Spiel einrichten</h2>
+          <p id="setupSubtitle" class="setup-sub">Namen vergeben und Spielmodus wählen.</p>
         </div>
 
-        <div id="nameInputGrid" class="name-grid"></div>
+        <!-- Block 1: Namen -->
+        <div class="setup-block">
+          <div class="setup-block-label">Spielernamen</div>
+          <div id="nameInputGrid" class="name-grid"></div>
+        </div>
+
+        <!-- Block 2: Spielmodus -->
+        <div class="setup-block">
+          <div class="setup-block-label">Spielmodus</div>
+          <div class="gm-tabs">
+            <button class="gm-tab active" data-gm="punkte">🏆 Punkteziel</button>
+            <button class="gm-tab" data-gm="runden">🔢 Rundenanzahl</button>
+          </div>
+          <div id="punkteSection" class="gm-section">
+            <div class="field">
+              <label for="zielPunkteInput">Zielpunktzahl</label>
+              <input type="number" id="zielPunkteInput" value="1000" min="100" step="50" />
+            </div>
+            <p class="field-hint">Wer diesen Wert zuerst erreicht, gewinnt das Spiel.</p>
+          </div>
+          <div id="rundenSection" class="gm-section" style="display:none">
+            <div class="field">
+              <label for="maxRundenInput">Anzahl Runden</label>
+              <input type="number" id="maxRundenInput" value="10" min="2" max="99" />
+            </div>
+            <p class="field-hint">Nach dieser Anzahl Runden gewinnt der Spieler mit den meisten Punkten.</p>
+          </div>
+        </div>
 
         <div class="setup-footer">
           <button id="startGameBtn" class="btn-primary large">
             Spiel starten <span class="btn-suit">♦</span>
           </button>
         </div>
-
       </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════════
-         GAME SCREEN
-    ════════════════════════════════════════════════ -->
+    <!-- ═══════════════ GAME SCREEN ═══════════════ -->
     <section id="gameScreen" class="screen">
-
       <div class="game-topbar">
         <div class="topbar-left">
           <div class="brand small">
@@ -112,7 +129,9 @@
           </div>
         </div>
         <div class="topbar-right">
-          <button class="theme-btn js-theme" aria-label="Dark/Light Mode umschalten">
+          <button id="regelBtn" class="icon-action-btn" title="Regelübersicht anzeigen" aria-label="Regelübersicht">📖</button>
+          <button id="meldungsBtn" class="icon-action-btn" title="Meldungsrechner öffnen" aria-label="Meldungsrechner">🧮</button>
+          <button class="theme-btn js-theme" aria-label="Dark/Light Mode">
             <span class="theme-icon"></span>
           </button>
           <button id="backBtn" class="btn-ghost">← Modus</button>
@@ -120,8 +139,6 @@
       </div>
 
       <div class="layout-grid">
-
-        <!-- Left / Main Column -->
         <div class="main-col">
 
           <!-- Input Panel -->
@@ -143,10 +160,11 @@
                 <select id="spielerIndex"></select>
               </div>
             </div>
+            <div id="validationError" class="validation-error" aria-live="polite"></div>
           </div>
 
-          <!-- Score Table -->
-          <div class="panel">
+          <!-- Score Table Panel -->
+          <div class="panel" id="scorePanel">
             <div class="panel-hd">
               <div>
                 <div class="panel-eyebrow">Übersicht</div>
@@ -154,13 +172,14 @@
               </div>
             </div>
             <div class="table-wrap">
-              <table>
+              <table id="scoreTable">
                 <thead>
                   <tr>
                     <th id="entityHeader">Spieler</th>
                     <th>Meldung</th>
                     <th>Gestochen</th>
                     <th>Gesamt</th>
+                    <th class="progress-th" id="progressTh">Fortschritt</th>
                   </tr>
                 </thead>
                 <tbody id="scoreTableBody"></tbody>
@@ -168,20 +187,17 @@
             </div>
           </div>
 
-          <!-- Action Buttons -->
+          <!-- Actions -->
           <div class="actions">
-            <button id="berechnenBtn" class="btn-primary large full">
-              ♦ Runde berechnen
-            </button>
+            <button id="berechnenBtn" class="btn-primary large full">♦ Runde berechnen</button>
             <div class="actions-row">
               <button id="undoBtn" class="btn-ghost" disabled>↶ Rückgängig</button>
               <button id="resetBtn" class="btn-danger">↺ Zurücksetzen</button>
             </div>
           </div>
-
         </div>
 
-        <!-- Right / History Column -->
+        <!-- History Column -->
         <div class="side-col">
           <div class="panel history-panel">
             <div class="panel-hd">
@@ -191,25 +207,17 @@
               </div>
               <span class="badge neutral">Verlauf</span>
             </div>
-            <div class="history-wrap">
-              <table>
-                <thead>
-                  <tr id="historyHeaderRow"></tr>
-                </thead>
-                <tbody id="history"></tbody>
-              </table>
+            <div class="history-list" id="historyList">
+              <div class="history-empty" id="historyEmpty">Noch keine Runden gespielt.</div>
             </div>
           </div>
         </div>
-
       </div>
     </section>
 
   </div><!-- /.app-shell -->
 
-  <!-- ═══════════════════════════════════════════════
-       WINNER MODAL
-  ════════════════════════════════════════════════ -->
+  <!-- ═══════════════ WINNER MODAL ═══════════════ -->
   <div id="winnerModal" class="modal hidden" aria-hidden="true">
     <div class="modal-backdrop"></div>
     <div class="modal-card">
@@ -224,6 +232,96 @@
       <p id="winnerText" class="winner-text"></p>
       <button id="winnerCloseBtn" class="btn-primary large">Weiter spielen ♦</button>
       <div id="confettiLayer" class="confetti-layer"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ REGELÜBERSICHT MODAL ═══════════════ -->
+  <div id="regelModal" class="modal hidden" aria-hidden="true">
+    <div class="modal-backdrop"></div>
+    <div class="modal-card side-modal">
+      <div class="modal-inner-header">
+        <h2 class="modal-inner-title">📖 Regelübersicht</h2>
+        <button class="close-btn js-close-regel" aria-label="Schließen">✕</button>
+      </div>
+      <div class="regel-body">
+        <div class="regel-section">
+          <h4>Spielziel</h4>
+          <p>Der <strong>Macher</strong> versucht, seinen angesagten Reizwert durch Meldungen und Stiche zu erreichen oder zu übertreffen. Die anderen Spieler versuchen, ihn daran zu hindern.</p>
+        </div>
+        <div class="regel-section success-bg">
+          <h4>🏆 Macher gewinnt</h4>
+          <p><em>Wenn Meldung + Gestochene ≥ Reizwert</em></p>
+          <ul>
+            <li><strong>Macher</strong> erhält: Meldung + Gestochene</li>
+            <li><strong>Andere</strong>: Meldung + Gestochene (0 Pkt. wenn keine Stiche gemacht)</li>
+          </ul>
+        </div>
+        <div class="regel-section danger-bg">
+          <h4>❌ Macher verliert</h4>
+          <p><em>Wenn Meldung + Gestochene &lt; Reizwert</em></p>
+          <ul>
+            <li><strong>Macher</strong> erhält: −2 × Reizwert</li>
+            <li><strong>Andere</strong>: Meldung + Gestochene (0 Pkt. wenn keine Stiche gemacht)</li>
+          </ul>
+        </div>
+        <div class="regel-section accent-bg">
+          <h4>🃏 Bettel</h4>
+          <p><em>Wenn Meldung = −Reizwert (Macher macht keinen einzigen Stich)</em></p>
+          <ul>
+            <li><strong>Macher</strong> erhält: −Reizwert</li>
+            <li><strong>Andere</strong>: Eigene Meldung + ½ Reizwert (abgerundet)</li>
+          </ul>
+        </div>
+        <div class="regel-section">
+          <h4>ℹ️ Wichtiger Hinweis</h4>
+          <p>Spieler, die keinen einzigen Stich gemacht haben (Gestochene = 0), erhalten keine Punkte für ihre Meldungen.</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary js-close-regel">Verstanden ♦</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ MELDUNGSRECHNER MODAL ═══════════════ -->
+  <div id="meldModal" class="modal hidden" aria-hidden="true">
+    <div class="modal-backdrop"></div>
+    <div class="modal-card side-modal meld-card">
+      <div class="modal-inner-header">
+        <h2 class="modal-inner-title">🧮 Meldungsrechner</h2>
+        <button class="close-btn js-close-meld" aria-label="Schließen">✕</button>
+      </div>
+      <div class="meld-total-bar">
+        <div>
+          <div class="meld-total-label">Gesamt-Meldung</div>
+          <div class="meld-total-sub">Ausgewählte Meldungen</div>
+        </div>
+        <div class="meld-total-right">
+          <span id="meldTotal" class="meld-total-val">0</span>
+          <span class="meld-total-pts">Pkt.</span>
+        </div>
+      </div>
+      <div class="meld-body" id="meldBody"></div>
+      <div class="meld-footer">
+        <button id="meldResetBtn" class="btn-ghost">↺ Zurücksetzen</button>
+        <button id="meldApplyBtn" class="btn-primary">
+          Übernehmen für <span id="meldApplyName">—</span> ♦
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ RESTORE MODAL ═══════════════ -->
+  <div id="restoreModal" class="modal hidden" aria-hidden="true">
+    <div class="modal-backdrop"></div>
+    <div class="modal-card restore-card">
+      <div class="restore-icon">💾</div>
+      <h3 class="restore-title">Gespeichertes Spiel gefunden</h3>
+      <p id="restoreInfo" class="winner-text"></p>
+      <div class="restore-actions">
+        <button id="restoreYesBtn" class="btn-primary large">Fortsetzen ♦</button>
+        <button id="restoreNoBtn" class="btn-ghost">Neues Spiel</button>
+      </div>
     </div>
   </div>
 
